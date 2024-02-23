@@ -1,0 +1,13 @@
+{
+  "agencies": [
+    {
+      "url": "https://data.nantesmetropole.fr/explore/dataset/244400404_tan-arrets-horaires-circuits/files/16a1a0af5946619af621baa4ad9ee662/download/"
+    }
+  ],
+  "csvOptions": {
+    "skip_lines_with_error": true
+  },
+  "ignoreDuplicates": false,
+  "sqlitePath": "data",
+  "exportPath": "export"
+}
