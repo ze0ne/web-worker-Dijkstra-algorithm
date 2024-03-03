@@ -187,61 +187,158 @@ lines.forEach((line) => {
 
 console.log(adjacencyList);
 
-var g = new jsgraphs.Graph(13);
-g.addEdge(0, 5);
-g.addEdge(4, 3);
-g.addEdge(0, 1);
-g.addEdge(9, 12);
-g.addEdge(6, 4);
-g.addEdge(5, 4);
-g.addEdge(0, 2);
-g.addEdge(11, 12);
-g.addEdge(9, 10);
-g.addEdge(0, 6);
-g.addEdge(7, 8);
-g.addEdge(9, 11);
-g.addEdge(5, 3);
+const drag = d3
+  .drag()
+  .on("start", dragstarted)
+  .on("drag", dragged)
+  .on("end", dragended);
 
-var cc = new jsgraphs.ConnectedComponents(g);
-console.log(cc.componentCount()); // display 3
-for (var v = 0; v < g.V; ++v) {
-  console.log("id[" + v + "]: " + cc.componentId(v));
+function dragstarted(event, d) {
+  d3.select(this).raise().classed("active", true);
 }
 
-var g_nodes = [];
-var g_edges = [];
-for (var v = 0; v < g.V; ++v) {
-  g.node(v).label = "Node " + v; // assigned 'Node {v}' as label for node v
-  g_nodes.push({
-    id: v,
-    label: g.node(v).label,
-    group: cc.componentId(v),
+function dragged(event, d) {
+  // Mise à jour de la position du nœud
+  d.x = event.x;
+  d.y = event.y;
+  d3.select(this).attr("cx", d.x).attr("cy", d.y);
+
+  // Mise à jour des lignes connectées et des distances
+  svg.selectAll("line").each(function (l) {
+    if (l.source === d || l.target === d) {
+      d3.select(this)
+        .attr("x1", l.source.x)
+        .attr("y1", l.source.y)
+        .attr("x2", l.target.x)
+        .attr("y2", l.target.y);
+
+      // Recalcul de la distance
+      l.distance = calculateDistance(l.source, l.target);
+    }
   });
 
-  var adj_v = g.adj(v);
-  for (var i = 0; i < adj_v.length; ++i) {
-    var w = adj_v[i];
-    if (w > v) continue; // make sure only one edge between w and v since the graph is undirected
-    g_edges.push({
-      from: v,
-      to: w,
+  // Mise à jour des étiquettes de distance
+  svg
+    .selectAll(".linkText")
+    .text((l) => Math.round(l.distance))
+    .attr("x", (l) => (l.source.x + l.target.x) / 2)
+    .attr("y", (l) => (l.source.y + l.target.y) / 2);
+
+  // Mise à jour de la position des étiquettes de nœud
+  d3.selectAll(".nodeText")
+    .attr("x", function (d) {
+      return d.x + 10;
+    })
+    .attr("y", function (d) {
+      return d.y;
     });
-  }
 }
 
-console.log(g.V); // display 6, which is the number of vertices in g
-console.log(g.adj(0)); // display [5, 1, 2], which is the adjacent list to vertex 0
+function dragended(event, d) {
+  d3.select(this).classed("active", false);
+}
 
-var nodes = new vis.DataSet(g_nodes);
+function calculateDistance(source, target) {
+  return Math.sqrt(
+    Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2)
+  );
+}
 
-// create an array with edges
-var edges = new vis.DataSet(g_edges);
+// Données des nœuds
+const nodes = [
+  { id: "A", x: 50, y: 300 },
+  { id: "B", x: 200, y: 50 },
+  { id: "C", x: 350, y: 250 },
+  { id: "D", x: 500, y: 400 },
+  { id: "E", x: 650, y: 150 },
+  { id: "F", x: 800, y: 300 },
+];
 
-// create a network
-var container = document.getElementById("mynetwork");
-var data = {
-  nodes: nodes,
-  edges: edges,
-};
-var options = {};
-var network = new vis.Network(container, data, options);
+// Données des liens (avec distances)
+const links = [
+  { source: nodes[0], target: nodes[1], distance: 200 }, // A-B
+  { source: nodes[1], target: nodes[2], distance: 136 }, // B-C
+  { source: nodes[2], target: nodes[3], distance: 152 }, // C-D
+  { source: nodes[3], target: nodes[4], distance: 170 }, // D-E
+  { source: nodes[4], target: nodes[5], distance: 78 }, // E-F
+  { source: nodes[0], target: nodes[2], distance: 136 }, // A-C
+  { source: nodes[1], target: nodes[5], distance: 260 }, // B-F
+  { source: nodes[2], target: nodes[4], distance: 131 }, // C-E
+  { source: nodes[0], target: nodes[3], distance: 130 }, // A-D
+];
+
+// Sélection de l'élément SVG
+const svg = d3.select("#myGraph");
+
+// Dessin des liens
+links.forEach((link) => {
+  const sourceNode = nodes.find((node) => node.id === link.source.id);
+  const targetNode = nodes.find((node) => node.id === link.target.id);
+
+  // Ligne
+  // svg
+  //   .append("line")
+  //   .attr("x1", sourceNode.x)
+  //   .attr("y1", sourceNode.y)
+  //   .attr("x2", targetNode.x)
+  //   .attr("y2", targetNode.y)
+  //   .attr("stroke", "black");
+
+  // Texte pour la distance
+  const midX = (sourceNode.x + targetNode.x) / 2;
+  const midY = (sourceNode.y + targetNode.y) / 2;
+});
+
+// Dessin des nœuds
+nodes.forEach((node) => {
+  // Cercle pour le nœud
+  // svg
+  //   .append("circle")
+  //   .attr("cx", node.x)
+  //   .attr("cy", node.y)
+  //   .attr("r", 5)
+  //   .attr("fill", "blue");
+
+  // Texte pour le nom du nœud
+  svg
+    .selectAll(".nodeText")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .attr("class", "nodeText")
+    .attr("x", (d) => d.x + 10)
+    .attr("y", (d) => d.y)
+    .text((d) => d.id);
+});
+
+svg
+  .selectAll("circle")
+  .data(nodes) // Assurez-vous que c'est bien la variable contenant vos nœuds
+  .enter()
+  .append("circle")
+  .attr("cx", (d) => d.x)
+  .attr("cy", (d) => d.y)
+  .attr("r", 5)
+  .attr("fill", "blue")
+  .call(drag); // Ici, vous appliquez la fonction de drag
+
+svg
+  .selectAll("line")
+  .data(links)
+  .enter()
+  .append("line")
+  .attr("x1", (d) => d.source.x)
+  .attr("y1", (d) => d.source.y)
+  .attr("x2", (d) => d.target.x)
+  .attr("y2", (d) => d.target.y)
+  .attr("stroke", "red");
+
+svg
+  .selectAll(".linkText")
+  .data(links)
+  .enter()
+  .append("text")
+  .attr("class", "linkText")
+  .attr("x", (d) => (d.source.x + d.target.x) / 2)
+  .attr("y", (d) => (d.source.y + d.target.y) / 2)
+  .text((d) => d.distance);

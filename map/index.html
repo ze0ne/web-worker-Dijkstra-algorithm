@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3 et Leaflet Exemple</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+      #map {
+        height: 800px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      // Initialiser la carte Leaflet
+      var map = L.map("map").setView([47.2184, -1.5536], 13);
+
+      // Ajouter une couche de tuiles OpenStreetMap
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Données exemple pour les points
+      //   47.246011255038894, -1.5939867485059416
+      var data = [
+        {
+          lat: 47.246011255038894,
+          lon: -1.5939867485059416,
+          name: "Jean Rostand",
+        }, // Paris
+        {
+          lat: 47.214606199022406,
+          lon: -1.5559038628598187,
+          name: "Commerfce",
+        }, // Louvre
+        // Ajoutez plus de points ici
+      ];
+
+      // Données de ligne exemple (relier chaque point au suivant)
+      var lineData = [
+        { source: data[0], target: data[1] },
+        // Ajoutez plus de lignes ici si nécessaire
+      ];
+
+      // Fonction pour mettre à jour les positions des cercles
+      // Fonction pour mettre à jour les positions des lignes et des cercles
+      function update() {
+        // Mettre à jour les lignes
+        g.selectAll("line")
+          .data(lineData)
+          .attr("x1", function (d) {
+            return map.latLngToLayerPoint([d.source.lat, d.source.lon]).x;
+          })
+          .attr("y1", function (d) {
+            return map.latLngToLayerPoint([d.source.lat, d.source.lon]).y;
+          })
+          .attr("x2", function (d) {
+            return map.latLngToLayerPoint([d.target.lat, d.target.lon]).x;
+          })
+          .attr("y2", function (d) {
+            return map.latLngToLayerPoint([d.target.lat, d.target.lon]).y;
+          });
+
+        // Mettre à jour les cercles
+        d3.selectAll("circle")
+          .attr("cx", function (d) {
+            return map.latLngToLayerPoint([d.lat, d.lon]).x;
+          })
+          .attr("cy", function (d) {
+            return map.latLngToLayerPoint([d.lat, d.lon]).y;
+          });
+      }
+
+      // Créer un calque SVG pour D3 dans la carte Leaflet
+      var svgLayer = L.svg({ clickable: true }).addTo(map);
+      var svg = d3.select("#map").select("svg");
+      var g = svg.append("g");
+
+      // Ajouter des cercles pour chaque point de données
+      g.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .style("fill", "blue")
+        .attr("r", 10)
+        .attr("stroke", "white")
+        .attr("stroke-width", 3)
+        .attr("fill-opacity", 0.5)
+        .on("mouseover", function (event, d) {
+          // Vous pouvez ajouter des interactions ici, comme afficher des infobulles
+          alert("Vous avez survolé " + d.name);
+        });
+
+      // Ajouter des lignes pour chaque paire de points
+      g.selectAll("line")
+        .data(lineData)
+        .enter()
+        .append("line")
+        .style("stroke", "red") // Couleur des lignes
+        .style("stroke-width", 3); // Épaisseur des lignes
+
+      // Assurez-vous que les points sont correctement positionnés lorsque la carte est déplacée ou zoomée
+      map.on("moveend", update);
+      update(); // Mise à jour initiale des positions
+    </script>
+  </body>
+</html>

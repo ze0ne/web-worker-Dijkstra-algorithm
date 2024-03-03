@@ -1,3 +1,5 @@
+import { writeFile } from "fs/promises";
+
 import {
   closeDb,
   openDb,
@@ -5,6 +7,7 @@ import {
   getStoptimes,
   getStops,
   getStopAttributes,
+  getRoutes,
 } from "gtfs";
 import { readFile } from "fs/promises";
 const config = JSON.parse(
@@ -31,6 +34,18 @@ function getStopName(stop) {
   )[0]["stop_name"];
 }
 
+function getStopInfos(stop) {
+  return getStops({
+    stop_id: stop,
+  })[0];
+}
+
+function getRoutesInfos(route_id) {
+  return getRoutes({
+    route_id,
+  })[0];
+}
+
 const station = getStopName("GBLO2");
 
 // trips.forEach((trip) => {
@@ -38,6 +53,8 @@ const station = getStopName("GBLO2");
 // });
 
 function getLigne(route_id, service_id) {
+  const routeInfos = getRoutesInfos(route_id);
+
   const trip = getTrips(
     {
       service_id,
@@ -45,16 +62,22 @@ function getLigne(route_id, service_id) {
     },
     ["service_id", "trip_id"]
   )[0];
-  const stoptimes = getStoptimes(
+  let stoptimes = getStoptimes(
     {
       trip_id: trip.trip_id,
     },
-    ["stop_id"],
+    [],
     [["stop_sequence", "ASC"]]
   );
-  stoptimes.map((stop) => (stop.name = getStopName(stop.stop_id)));
-  //console.log(stoptimes);
-  return stoptimes;
+  stoptimes = stoptimes.map((stop) => ({
+    ...stop,
+    ...getStopInfos(stop.stop_id),
+  }));
+  const data = {
+    route: routeInfos,
+    stoptimes,
+  };
+  return data;
 }
 
 //stoptimes.map((stop) => (stop.name = getStopName(stop.stop_id)));
@@ -74,31 +97,41 @@ function createWeightedEdge(source, target, weight) {
 
 // Initialiser un tableau pour stocker les arêtes pondérées
 const weightedEdges = [];
+const routes = [];
 
 // Ajouter les arêtes pondérées pour chaque ligne de transport
 function addWeightedEdges(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    const source = line[i];
-    const target = line[i + 1];
+  //console.log(line);
+  for (let i = 0; i < line.stoptimes.length - 1; i++) {
+    const source = line.stoptimes[i];
+    const target = line.stoptimes[i + 1];
     // Vous pouvez définir le poids de l'arête selon vos critères,
     // par exemple, la distance entre les arrêts, le temps de trajet, etc.
     const weight = 1; // Pour l'exemple, le poids est fixé à 1
     weightedEdges.push(createWeightedEdge(source, target, weight));
   }
+  routes.push({
+    route: line.route,
+    edges: weightedEdges,
+  });
 }
 
 addWeightedEdges(line1);
 addWeightedEdges(line2);
 addWeightedEdges(line3);
+addWeightedEdges(line4);
+addWeightedEdges(line5);
 //console.log(addWeightedEdges(line1));
 
-//console.log(weightedEdges);
+console.log(routes);
 
-weightedEdges.forEach((edge) => {
-  console.log(
-    `${edge.source.name} -> ${edge.target.name} (Poids : ${edge.weight})`
-  );
-});
+//exportData(routes);
+
+// weightedEdges.forEach((edge) => {
+//   console.log(
+//     `${edge.source.name} -> ${edge.target.name} (Poids : ${edge.weight})`
+//   );
+// });
 
 // Afficher les arêtes pondérées
 ///console.log(weightedEdges);
@@ -118,3 +151,17 @@ weightedEdges.forEach((edge) => {
 // // Afficher chaque service_id avec son nombre d'occurrences
 // formattedOccurrences.forEach((occurrence) => console.log(occurrence));
 //console.log("Stop :" + station);
+
+function exportData(data) {
+  const jsonData = JSON.stringify(data);
+
+  // Écriture de la chaîne JSON dans un fichier
+  (async () => {
+    try {
+      await writeFile("routes.json", jsonData, "utf8");
+      console.log("Le fichier JSON a été créé avec succès !");
+    } catch (err) {
+      console.error("Erreur lors de l'écriture du fichier :", err);
+    }
+  })();
+}
