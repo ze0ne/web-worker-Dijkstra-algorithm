@@ -11,6 +11,27 @@
     <style>
       #map {
         height: 800px;
+        width: 100%;
+        position: absolute;
+      }
+      .leaflet-pane {
+        pointer-events: none;
+      }
+      svg {
+        pointer-events: all;
+      }
+      .tooltip {
+        font-family: "Arial";
+        z-index: 999;
+        position: absolute;
+        border: solid red 2px;
+        opacity: 0;
+        background-color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        color: black;
+        font-weight: bold;
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.25);
       }
     </style>
   </head>

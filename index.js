@@ -89,6 +89,12 @@ const line2 = getLigne("2-0", "CR_23_24-HT24H105-Vendredi-03");
 const line3 = getLigne("3-0", "CR_23_24-HS24H1J5-Vendredi-01");
 const line4 = getLigne("4-0", "CR_23_24-HT24H105-Vendredi-03");
 const line5 = getLigne("5-0", "CR_23_24-HT24H105-Vendredi-03");
+const c6 = getLigne("C6-0", "CR_23_24-HD24P105-Vendredi-21");
+const c1 = getLigne("C1-0", "CR_23_24-HD24P105-Vendredi-21");
+const c2 = getLigne("C2-0", "CR_23_24-HS24P1J5-Vendredi-20-0000100");
+const c3 = getLigne("C3-0", "CR_23_24-HS24P1J5-Vendredi-20-0000100");
+
+//console.log(line1);
 
 // Fonction pour créer une arête pondérée
 function createWeightedEdge(source, target, weight) {
@@ -101,7 +107,7 @@ const routes = [];
 
 // Ajouter les arêtes pondérées pour chaque ligne de transport
 function addWeightedEdges(line) {
-  //console.log(line);
+  const weightedEdges = [];
   for (let i = 0; i < line.stoptimes.length - 1; i++) {
     const source = line.stoptimes[i];
     const target = line.stoptimes[i + 1];
@@ -112,20 +118,255 @@ function addWeightedEdges(line) {
   }
   routes.push({
     route: line.route,
+    stops: line.stoptimes,
     edges: weightedEdges,
   });
 }
 
-addWeightedEdges(line1);
-addWeightedEdges(line2);
-addWeightedEdges(line3);
-addWeightedEdges(line4);
-addWeightedEdges(line5);
-//console.log(addWeightedEdges(line1));
+//console.log(routes);
 
-console.log(routes);
+const trams = [
+  {
+    name: "1-0",
+    trip_id: "CR_23_24-HD24H2B5-Vendredi-02",
+  },
+  {
+    name: "2-0",
+    trip_id: "CR_23_24-HT24H105-Vendredi-03",
+  },
+  {
+    name: "3-0",
+    trip_id: "CR_23_24-HS24H1J5-Vendredi-01",
+  },
+];
 
-//exportData(routes);
+const chronobus = [
+  {
+    name: "4-0",
+    trip_id: "CR_23_24-HT24H105-Vendredi-03",
+  },
+  {
+    name: "5-0",
+    trip_id: "CR_23_24-HT24H105-Vendredi-03",
+  },
+  {
+    name: "C1-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  {
+    name: "C2-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20-0000100",
+  },
+  {
+    name: "C3-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20-0000100",
+  },
+  {
+    name: "C4-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23-0000100",
+  },
+  {
+    name: "C6-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  {
+    name: "C7-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21-0000100",
+  },
+  {
+    name: "C9-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23-0000100",
+  },
+  {
+    name: "C20-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+];
+
+const bus = [
+  {
+    name: "10-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  {
+    name: "11-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  {
+    name: "12-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+  {
+    name: "23-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  {
+    name: "26-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+  {
+    name: "27-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "28-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27-0000100",
+  },
+  {
+    name: "30-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+  {
+    name: "33-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "36-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+  {
+    name: "38-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+  {
+    name: "40-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "42-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "47-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "50-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+  {
+    name: "54-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+  {
+    name: "59-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "60-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "66-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "67-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "69-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+  {
+    name: "71-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "75-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  {
+    name: "77-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "78-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "79-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "80-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "81-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "85-0",
+    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+  },
+  ,
+  {
+    name: "86-0",
+    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+  },
+  ,
+  {
+    name: "87-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "88-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "89-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "91-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "93-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "95-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "96-0",
+    trip_id: "CR_23_24-HA24P105-Vendredi-27",
+  },
+  ,
+  {
+    name: "97-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+  {
+    name: "98-0",
+    trip_id: "CR_23_24-HT24P105-Vendredi-23",
+  },
+];
+
+const lines = [...trams, ...chronobus, ...bus];
+lines.forEach((line) => {
+  if (line && line.disable !== true) {
+    const data = getLigne(line.name, line.trip_id);
+    if (data) {
+      addWeightedEdges(data);
+    }
+  }
+});
+
+exportData(routes);
 
 // weightedEdges.forEach((edge) => {
 //   console.log(
