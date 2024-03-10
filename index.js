@@ -15,7 +15,7 @@ const config = JSON.parse(
 );
 const db = openDb(config);
 
-getStopAttributes;
+//getStopAttributes;
 
 // Get all stoptimes for a specific trip, sorted by stop_sequence
 
@@ -62,6 +62,12 @@ function getLigne(route_id, service_id) {
     },
     ["service_id", "trip_id"]
   )[0];
+
+  if (!trip) {
+    console.log("no trip for ", route_id);
+    return;
+  }
+
   let stoptimes = getStoptimes(
     {
       trip_id: trip.trip_id,
@@ -69,6 +75,7 @@ function getLigne(route_id, service_id) {
     [],
     [["stop_sequence", "ASC"]]
   );
+
   stoptimes = stoptimes.map((stop) => ({
     ...stop,
     ...getStopInfos(stop.stop_id),
@@ -83,17 +90,6 @@ function getLigne(route_id, service_id) {
 //stoptimes.map((stop) => (stop.name = getStopName(stop.stop_id)));
 
 //console.log(stoptimes);
-
-const line1 = getLigne("1-0", "CR_23_24-HD24H2B5-Vendredi-02");
-const line2 = getLigne("2-0", "CR_23_24-HT24H105-Vendredi-03");
-const line3 = getLigne("3-0", "CR_23_24-HS24H1J5-Vendredi-01");
-const line4 = getLigne("4-0", "CR_23_24-HT24H105-Vendredi-03");
-const line5 = getLigne("5-0", "CR_23_24-HT24H105-Vendredi-03");
-const c6 = getLigne("C6-0", "CR_23_24-HD24P105-Vendredi-21");
-const c1 = getLigne("C1-0", "CR_23_24-HD24P105-Vendredi-21");
-const c2 = getLigne("C2-0", "CR_23_24-HS24P1J5-Vendredi-20-0000100");
-const c3 = getLigne("C3-0", "CR_23_24-HS24P1J5-Vendredi-20-0000100");
-
 //console.log(line1);
 
 // Fonction pour créer une arête pondérée
@@ -128,7 +124,7 @@ function addWeightedEdges(line) {
 const trams = [
   {
     name: "1-0",
-    trip_id: "CR_23_24-HD24H2B5-Vendredi-02",
+    trip_id: "CR_23_24-HD24E105-Vendredi-31",
   },
   {
     name: "2-0",
@@ -136,7 +132,7 @@ const trams = [
   },
   {
     name: "3-0",
-    trip_id: "CR_23_24-HS24H1J5-Vendredi-01",
+    trip_id: "CR_23_24-HS24P1D5-Vendredi-22",
   },
 ];
 
@@ -356,7 +352,7 @@ const bus = [
   },
 ];
 
-const lines = [...trams, ...chronobus, ...bus];
+const lines = [...trams];
 lines.forEach((line) => {
   if (line && line.disable !== true) {
     const data = getLigne(line.name, line.trip_id);
