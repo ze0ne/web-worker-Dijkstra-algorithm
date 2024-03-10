@@ -46,6 +46,8 @@
     "deep-extend": "^0.6.0",
     "deep-is": "^0.1.4",
     "detect-libc": "^2.0.2",
+    "dijkstra-calculator": "1.0.8",
+    "dijkstrajs": "1.0.3",
     "dom-converter": "^0.2.0",
     "dom-serializer": "^1.4.1",
     "domelementtype": "^2.3.0",
@@ -195,6 +197,7 @@
   },
   "scripts": {
     "start": "nodemon index.js",
+    "dijkstra": "nodemon dijkstra.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

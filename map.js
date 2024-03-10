@@ -1,6 +1,19 @@
 // Initialiser la carte Leaflet
 console.log("leaflet", L);
-var map = L.map("map").setView([47.2184, -1.5536], 14);
+var graphzzzz = {
+  a: { b: 10, d: 1 },
+  b: { a: 1, c: 1, e: 1 },
+  c: { b: 1, f: 1 },
+  d: { a: 1, e: 1, g: 1 },
+  e: { b: 1, d: 1, f: 1, h: 1 },
+  f: { c: 1, e: 1, i: 1 },
+  g: { d: 1, h: 1 },
+  h: { e: 1, g: 1, i: 1 },
+  i: { f: 1, h: 1 },
+};
+
+console.log("cc", graphzzzz);
+var map = L.map("map").setView([47.2184, -1.5536], 13);
 
 // Ajouter une couche de tuiles OpenStreetMap
 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
@@ -22,15 +35,14 @@ const tableauTransport = [];
 let graphe = {};
 
 // Exécution de l'algorithme de Dijkstra
-const depart = "Tourmaline";
+const depart = "Jean Rostand";
 const destination = "Commerce";
-const { cheminPlusCourt, dureeTotale } = dijkstra(graphe, depart, destination); // fonction à définir
 
-console.log(
-  `Le chemin le plus court de ${depart} à ${destination} est :`,
-  cheminPlusCourt
-);
-console.log("La durée totale du trajet est :", dureeTotale);
+// console.log(
+//   `Le chemin le plus court de ${depart} à ${destination} est :`,
+//   cheminPlusCourt
+// );
+// console.log("La durée totale du trajet est :", dureeTotale);
 
 // Fonction pour calculer le temps de trajet entre deux arrêts (à définir selon votre logique)
 function calculerTempsTrajet(depart, arrivee) {
@@ -44,59 +56,12 @@ function ajouterArete(graphe, depart, arrivee, poids) {
     graphe[depart] = [];
   }
   graphe[depart].push({ arrivee, poids });
+  //console.log("graph", graphe);
 }
+
+//const { cheminPlusCourt, dureeTotale } = dijkstra(graphe, depart, destination); // fonction à définir
 
 // Fonction pour exécuter l'algorithme de Dijkstra (à définir)
-function dijkstra(graphe, depart, destination) {
-  // Création d'un objet pour stocker les distances depuis le nœud de départ
-  const distances = {};
-  // Création d'un objet pour stocker les chemins les plus courts depuis le nœud de départ
-  const chemins = {};
-  // Initialisation des distances pour tous les nœuds à l'infini sauf pour le nœud de départ à 0
-  for (const noeud in graphe) {
-    distances[noeud] = noeud === depart ? 0 : Infinity;
-    chemins[noeud] = null;
-  }
-
-  const nœudsNonVisités = new Set(Object.keys(graphe));
-
-  while (nœudsNonVisités.size > 0) {
-    // Trouver le nœud non visité avec la plus petite distance connue
-    const noeudActuel = Array.from(nœudsNonVisités).reduce((minNoeud, noeud) =>
-      distances[noeud] < distances[minNoeud] ? noeud : minNoeud
-    );
-
-    // Si le nœud actuel est le nœud de destination, on a trouvé le chemin le plus court
-    if (noeudActuel === destination) {
-      break;
-    }
-
-    // Retirer le nœud actuel de l'ensemble des nœuds non visités
-    nœudsNonVisités.delete(noeudActuel);
-
-    // Pour chaque nœud voisin du nœud actuel
-    for (const voisin of graphe[noeudActuel]) {
-      const distanceAlternative = distances[noeudActuel] + voisin.poids;
-      // Si la distance alternative est plus courte que la distance actuellement connue pour ce voisin
-      if (distanceAlternative < distances[voisin.arrivee]) {
-        // Mettre à jour la distance et le chemin pour ce voisin
-        distances[voisin.arrivee] = distanceAlternative;
-        chemins[voisin.arrivee] = noeudActuel;
-      }
-    }
-  }
-
-  // Reconstruire le chemin le plus court à partir des chemins trouvés
-  const cheminPlusCourt = [destination];
-  let noeud = destination;
-  while (noeud !== depart) {
-    noeud = chemins[noeud];
-    cheminPlusCourt.unshift(noeud);
-  }
-
-  // Retourner le chemin le plus court et la durée totale du trajet
-  return { cheminPlusCourt, dureeTotale: distances[destination] };
-}
 
 fetch("routes.json")
   .then((response) => response.json())
@@ -139,6 +104,8 @@ fetch("routes.json")
     });
     map.on("moveend", updateAll(routes));
 
+    console.log("tableau", tableauTransport);
+
     // Remplissage du graphe
     tableauTransport.forEach((ligne) => {
       //console.log("ligne", ligne);
@@ -146,9 +113,122 @@ fetch("routes.json")
         const depart = ligne.arrets[i];
         const arrivee = ligne.arrets[i + 1];
         const tempsTrajet = calculerTempsTrajet(depart, arrivee); // fonction à définir
+        //console.log("tempsTrajet", depart, arrivee, tempsTrajet);
         ajouterArete(graphe, depart, arrivee, tempsTrajet); // fonction à définir
       }
     });
+
+    // const simpleGraph = {};
+
+    // tableauTransport.forEach((line) => {
+    //   const time = Math.round(Math.random() * 60);
+    //   simpleGraph[line.ligne] = line.arrets.reduce((acc, stop) => {
+    //     acc[stop] = time;
+    //     return acc;
+    //   }, {});
+    // });
+
+    // // Afficher le graphe
+    // console.log("simpleGraph", simpleGraph);
+
+    // Création du graphe
+
+    // Définir une fonction pour créer le graphe à partir des données des lignes de bus
+    function créerGraphe(lignes) {
+      const graphezz = {};
+
+      // Parcourir chaque ligne
+      lignes.forEach((ligne) => {
+        const arrets = ligne.arrets;
+        const ligneId = ligne.ligne;
+
+        // Parcourir chaque arrêt de la ligne
+        for (let i = 0; i < arrets.length - 1; i++) {
+          const départ = arrets[i];
+          const arrivée = arrets[i + 1];
+
+          // Ajouter les connexions dans les deux sens
+          if (!graphezz[départ]) {
+            graphezz[départ] = {};
+          }
+          if (!graphezz[arrivée]) {
+            graphezz[arrivée] = {};
+          }
+          graphezz[départ][arrivée] = 1; // Poids arbitraire de 1 pour chaque connexion
+          graphezz[arrivée][départ] = 1;
+        }
+      });
+
+      return graphezz;
+    }
+
+    const graphik = créerGraphe(tableauTransport);
+    console.log("phik", graphik);
+
+    const start = "Polyclinique";
+    const end = "Hangar à Bananes";
+    focusStop(start);
+    focusStop(end);
+
+    const { distances, parents } = dijkstra(graphik, start);
+    const chemin = cheminLePlusCourt(parents, end);
+
+    console.log("Distances:", distances);
+    console.log("Parents:", parents);
+    console.log("Chemin le plus court:", chemin);
+
+    //console.log("eephrah", graphe, depart, destination);
+    function dijkstrazz(noeuds, depart, arrivee) {
+      focusStop(depart, "start");
+      focusStop(arrivee, "end");
+      // Initialisation des distances et des prédécesseurs
+      let distances = {};
+      let predecesseurs = {};
+      let noeudsNonVisites = Object.keys(noeuds);
+
+      // Initialisation des distances à l'infini sauf pour le noeud de départ
+      for (let noeud of noeudsNonVisites) {
+        distances[noeud] = Infinity;
+      }
+      distances[depart] = 0;
+
+      // Boucle principale jusqu'à ce que tous les noeuds soient visités
+      while (noeudsNonVisites.length) {
+        // Sélection du noeud non visité avec la plus petite distance actuelle
+        let noeudActuel = noeudsNonVisites.reduce(
+          (min, noeud) => (distances[noeud] < distances[min] ? noeud : min),
+          noeudsNonVisites[0]
+        );
+
+        // Retrait du noeud actuel de la liste des noeuds non visités
+        noeudsNonVisites = noeudsNonVisites.filter(
+          (noeud) => noeud !== noeudActuel
+        );
+
+        // Mise à jour des distances et des prédécesseurs pour les voisins du noeud actuel
+        for (let voisin of noeuds[noeudActuel]) {
+          let distance = distances[noeudActuel] + voisin.poids;
+          if (distance < distances[voisin.arrivee]) {
+            distances[voisin.arrivee] = distance;
+            predecesseurs[voisin.arrivee] = noeudActuel;
+          }
+        }
+      }
+
+      // Reconstruction du chemin le plus court
+      let cheminCourt = [arrivee];
+      let predecesseur = arrivee;
+      while (predecesseur !== depart) {
+        cheminCourt.unshift(predecesseurs[predecesseur]);
+        predecesseur = predecesseurs[predecesseur];
+      }
+
+      // Retourne le chemin le plus court
+      return cheminCourt;
+    }
+
+    //const result = dijkstrazz(graphe, "Commerce", "Mangin");
+    //console.log("result", result);
 
     // const lineData = line1.edges.map((edge) => {
     //   return {
@@ -191,6 +271,7 @@ function createStopPoint(line, g) {
     .append("circle")
     .style("fill", `#${line.route.route_color}`)
     .style("z-index", "0")
+    .attr("class", (d, i) => `${className} stop_${formaterChaine(d.name)}`)
     .on("mouseover", function (event, d) {
       tooltip.transition().duration(200).style("opacity", 1);
       tooltip.html(d.name).style("border-color", `#${line.route.route_color}`);
@@ -204,13 +285,20 @@ function createStopPoint(line, g) {
     // .on("mouseout", function (d) {
     //   tooltip.transition().duration(500).style("opacity", 0);
     // })
-    .attr("class", className)
+    //.attr("class", className)
     .attr("r", 4)
     .attr("stroke", "black")
     .attr("stroke-width", 2)
     .attr("fill-opacity", 1);
 
   updateMap(g, line); // Mise à jour initiale des positions
+}
+
+function focusStop(stop, className) {
+  ///console.log("focusStop", stop, className);
+  g.selectAll(`circle.stop_${formaterChaine(stop)}`)
+    .attr("r", 6)
+    .attr("class", (d, i) => `${className} stop_${formaterChaine(d.name)}`);
 }
 
 function createLine(line, g) {
@@ -225,6 +313,12 @@ function createLine(line, g) {
     .style("stroke-width", 3); // Épaisseur des lignes
 
   updateMap(g, line);
+}
+
+function formaterChaine(chaine) {
+  // Remplacer les caractères spéciaux par des tirets
+  var chaineFormatee = chaine.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "-");
+  return chaineFormatee;
 }
 
 function updateAll(routes) {
@@ -282,4 +376,64 @@ function updateMap(g, line) {
     .attr("cy", function (d) {
       return map.latLngToLayerPoint([d.lat, d.lon]).y;
     });
+}
+
+// Implémentation de l'algorithme de Dijkstra
+function dijkstra(graphe, départ) {
+  const distances = {};
+  const visited = {};
+  const parents = {};
+  const queue = [];
+
+  // Initialisation des distances et des parents
+  for (let sommet in graphe) {
+    distances[sommet] = Infinity;
+    parents[sommet] = null;
+  }
+  distances[départ] = 0;
+
+  // Ajouter le nœud de départ à la file d'attente
+  queue.push(départ);
+
+  // Tant que la file d'attente n'est pas vide
+  let index = 0;
+  const traverseQueue = () => {
+    if (index < queue.length) {
+      // Retirer le nœud avec la plus petite distance de la file d'attente
+      const courant = queue[index++];
+      focusStop(courant, "active");
+      visited[courant] = true;
+
+      // Parcourir les voisins du nœud courant
+      for (let voisin in graphe[courant]) {
+        if (!visited[voisin]) {
+          const poids = graphe[courant][voisin];
+          const distance = distances[courant] + poids;
+
+          // Mettre à jour la distance et le parent si la nouvelle distance est plus courte
+          if (distance < distances[voisin]) {
+            distances[voisin] = distance;
+            parents[voisin] = courant;
+            queue.push(voisin);
+          }
+        }
+      }
+      setTimeout(traverseQueue, 50); // Appel récursif après 1 seconde
+    }
+  };
+
+  setTimeout(traverseQueue, 50); // Démarre la boucle après 1 seconde
+
+  return { distances, parents };
+}
+
+// Fonction pour récupérer le chemin le plus court entre deux arrêts
+function cheminLePlusCourt(parents, arrivée) {
+  const chemin = [arrivée];
+  let parent = parents[arrivée];
+  while (parent) {
+    chemin.unshift(parent);
+    parent = parents[parent];
+  }
+  return chemin;
 }

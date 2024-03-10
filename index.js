@@ -124,7 +124,7 @@ function addWeightedEdges(line) {
 const trams = [
   {
     name: "1-0",
-    trip_id: "CR_23_24-HD24E105-Vendredi-31",
+    trip_id: "CR_23_24-HD24P101-L-Ma-Me-J-00",
   },
   {
     name: "2-0",
@@ -147,15 +147,15 @@ const chronobus = [
   },
   {
     name: "C1-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24E105-Vendredi-31",
   },
   {
     name: "C2-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20-0000100",
+    trip_id: "CR_23_24-HS24P1D1-L-Ma-Me-J-23",
   },
   {
     name: "C3-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20-0000100",
+    trip_id: "CR_23_24-HS24P1D1-L-Ma-Me-J-23-1111000",
   },
   {
     name: "C4-0",
@@ -163,11 +163,11 @@ const chronobus = [
   },
   {
     name: "C6-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24P1J1-L-Ma-Me-J-20",
   },
   {
     name: "C7-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21-0000100",
+    trip_id: "CR_23_24-HD24P1J1-L-Ma-Me-J-20",
   },
   {
     name: "C9-0",
@@ -175,26 +175,26 @@ const chronobus = [
   },
   {
     name: "C20-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24P1D1-L-Ma-Me-J-23",
   },
 ];
 
 const bus = [
   {
     name: "10-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24H201-L-Ma-Me-J-14",
   },
   {
     name: "11-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24H201-L-Ma-Me-J-14",
   },
   {
     name: "12-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24H101-L-Ma-Me-J-05",
   },
   {
     name: "23-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24H201-L-Ma-Me-J-14",
   },
   {
     name: "26-0",
@@ -238,11 +238,11 @@ const bus = [
   },
   {
     name: "50-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24H101-L-Ma-Me-J-05-0010000",
   },
   {
     name: "54-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24H101-L-Ma-Me-J-05",
   },
   {
     name: "59-0",
@@ -262,7 +262,7 @@ const bus = [
   },
   {
     name: "69-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24H101-L-Ma-Me-J-05",
   },
   {
     name: "71-0",
@@ -299,12 +299,12 @@ const bus = [
   ,
   {
     name: "85-0",
-    trip_id: "CR_23_24-HD24P105-Vendredi-21",
+    trip_id: "CR_23_24-HD24H201-L-Ma-Me-J-14",
   },
   ,
   {
     name: "86-0",
-    trip_id: "CR_23_24-HS24P1J5-Vendredi-20",
+    trip_id: "CR_23_24-HS24H101-L-Ma-Me-J-05",
   },
   ,
   {
@@ -352,7 +352,7 @@ const bus = [
   },
 ];
 
-const lines = [...trams];
+const lines = [...trams, ...chronobus, ...bus];
 lines.forEach((line) => {
   if (line && line.disable !== true) {
     const data = getLigne(line.name, line.trip_id);
