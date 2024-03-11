@@ -165,17 +165,24 @@ fetch("routes.json")
     const graphik = créerGraphe(tableauTransport);
     console.log("phik", graphik);
 
-    const start = "Commerce";
+    const start = "Polyclinique";
     const end = "Hangar à Bananes";
     focusStop(start);
     focusStop(end);
 
-    const { distances, parents } = dijkstra(graphik, start);
-    const chemin = cheminLePlusCourt(parents, end);
-
-    console.log("Distances:", distances);
-    console.log("Parents:", parents);
-    console.log("Chemin le plus court:", chemin);
+    dijkstra(graphik, start, ({ distances, parents }) => {
+      const chemin = cheminLePlusCourt(parents, end);
+      console.log(
+        "Le chemin le plus court de",
+        start,
+        "à",
+        end,
+        ":",
+        chemin,
+        "distance de ",
+        distances
+      );
+    });
 
     //console.log("eephrah", graphe, depart, destination);
     function dijkstrazz(noeuds, depart, arrivee) {
@@ -379,7 +386,7 @@ function updateMap(g, line) {
 }
 
 // Implémentation de l'algorithme de Dijkstra
-function dijkstra(graphe, départ) {
+function dijkstra(graphe, départ, callback) {
   const distances = {};
   const visited = {};
   const parents = {};
@@ -396,11 +403,10 @@ function dijkstra(graphe, départ) {
   queue.push(départ);
 
   // Tant que la file d'attente n'est pas vide
-  let index = 0;
   const traverseQueue = () => {
-    if (index < queue.length) {
+    if (queue.length > 0) {
       // Retirer le nœud avec la plus petite distance de la file d'attente
-      const courant = queue[index++];
+      const courant = queue.shift();
       focusStop(courant, "active");
       visited[courant] = true;
 
@@ -416,22 +422,19 @@ function dijkstra(graphe, départ) {
             parents[voisin] = courant;
             queue.push(voisin);
           } else {
-            invalidPath(courant, voisin);
-            //console.log("Chemin invalidé :", courant, "->", voisin);
+            focusStop(voisin, "off");
           }
         }
       }
-      setTimeout(traverseQueue, 0); // Appel récursif après 1 seconde
+      // Appel de la fonction de rappel une fois que Dijkstra est terminé
+      callback({ distances, parents });
+
+      // Appeler traverseQueue après une seconde
+      setTimeout(traverseQueue, 0);
     }
   };
 
-  setTimeout(traverseQueue, 0); // Démarre la boucle après 1 seconde
-
-  return { distances, parents };
-}
-
-function invalidPath(courant, voisin) {
-  focusStop(voisin, "off");
+  traverseQueue(); // Démarre la boucle
 }
 
 // Fonction pour récupérer le chemin le plus court entre deux arrêts
@@ -442,5 +445,19 @@ function cheminLePlusCourt(parents, arrivée) {
     chemin.unshift(parent);
     parent = parents[parent];
   }
+  coloriseFinalPath(chemin);
   return chemin;
+}
+
+function coloriseFinalPath(path) {
+  //invalidPath();
+  path.forEach((stop) => {
+    focusStop(stop, "start");
+  });
+}
+
+function invalidPath() {
+  g.selectAll(`circle`)
+    .attr("r", 6)
+    .attr("class", (d, i) => `${className} stop_${formaterChaine(d.name)} off`);
 }
