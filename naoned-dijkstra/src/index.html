@@ -1,48 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html dir="ltr" lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="./src/output.css" rel="stylesheet" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+    <link href="./style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script type="module" src="/build/naoned-dijkstra.esm.js"></script>
+    <script nomodule src="/build/naoned-dijkstra.js"></script>
   </head>
   <body class="bg-gray-100 h-full font-sans leading-normal tracking-normal">
     <div class="flex">
       <!-- Sidebar -->
       <div class="flex h-100 bg-gray-800 text-gray-100">
-        <nav
-          class="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-80"
-        >
+        <nav class="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-80">
           <div class="flex flex-col h-full">
-            <div class="h-20 flex items-center px-8">
-              <a href="javascript:void(0)" class="flex-none" rel="nofollow"
-                ><img
-                  src="https://floatui.com/logo.svg"
-                  width="140"
-                  class="mx-auto"
-              /></a>
+            <div class="h-20 flex items-center mx-auto my-10">
+              <a href="javascript:void(0)" class="flex-none" rel="nofollow">
+                <img src="assets/img/logo.png" width="200" class="mx-auto" />
+              </a>
             </div>
             <div class="flex-1 flex flex-col h-full overflow-auto">
               <ul class="px-4 text-sm font-medium flex-1">
                 <li>
-                  <a
-                    href="javascript:void(0)"
-                    class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                    rel="nofollow"
+                  <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                     ><div class="text-gray-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-5 h-5"
-                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
@@ -54,19 +37,9 @@
                   >
                 </li>
                 <li>
-                  <a
-                    href="javascript:void(0)"
-                    class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                    rel="nofollow"
+                  <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                     ><div class="text-gray-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-5 h-5"
-                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
@@ -78,19 +51,9 @@
                   >
                 </li>
                 <li>
-                  <a
-                    href="javascript:void(0)"
-                    class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                    rel="nofollow"
+                  <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                     ><div class="text-gray-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-5 h-5"
-                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
@@ -102,19 +65,9 @@
                   >
                 </li>
                 <li>
-                  <a
-                    href="javascript:void(0)"
-                    class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                    rel="nofollow"
+                  <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                     ><div class="text-gray-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-5 h-5"
-                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
@@ -129,19 +82,9 @@
               <div>
                 <ul class="px-4 pb-4 text-sm font-medium">
                   <li>
-                    <a
-                      href="javascript:void(0)"
-                      class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                      rel="nofollow"
+                    <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                       ><div class="text-gray-500">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-5 h-5"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -153,48 +96,24 @@
                     >
                   </li>
                   <li>
-                    <a
-                      href="javascript:void(0)"
-                      class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                      rel="nofollow"
+                    <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                       ><div class="text-gray-500">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-5 h-5"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
                           ></path>
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          ></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                       </div>
                       Settings</a
                     >
                   </li>
                   <li>
-                    <a
-                      href="javascript:void(0)"
-                      class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                      rel="nofollow"
+                    <a href="javascript:void(0)" class="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150" rel="nofollow"
                       ><div class="text-gray-500">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-5 h-5"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -216,56 +135,13 @@
       <div class="flex w-full h-screen ml-80 p-4">
         <div class="flex w-full flex-col">
           <div class="container py-4">
-            <div class="max-w-md bg-white rounded-md shadow-md overflow-hidden">
-              <div class="bg-gray-200 text-gray-700 px-4 py-2">
-                <h2 class="text-lg font-semibold">Planification de Voyage</h2>
-              </div>
-              <div class="p-4">
-                <div class="mb-4">
-                  <label
-                    for="departure"
-                    class="block text-gray-700 font-bold mb-2"
-                    >Départ :</label
-                  >
-                  <input
-                    type="text"
-                    id="departure"
-                    name="departure"
-                    placeholder="Entrez votre lieu de départ"
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400"
-                  />
-                </div>
-                <div class="mb-4">
-                  <label
-                    for="arrival"
-                    class="block text-gray-700 font-bold mb-2"
-                    >Arrivée :</label
-                  >
-                  <input
-                    type="text"
-                    id="arrival"
-                    name="arrival"
-                    placeholder="Entrez votre lieu d'arrivée"
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400"
-                  />
-                </div>
-                <div>
-                  <button
-                    onclick="search('Commerce', 'Pompidou')"
-                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-                  >
-                    Rechercher Itinéraire
-                  </button>
-                </div>
-              </div>
+            <div class="p-4 w-full h-screen rounded-lg">
+              <app-map class="w-full h-full"></app-map>
             </div>
           </div>
-          <div class="w-full h-full rounded-lg border-2 border-dashed flex p-2">
-            <div id="map" class="p-4 w-full h-full rounded-lg"></div>
-          </div>
+          <div class="w-full h-full rounded-lg border-2 border-dashed flex p-2"></div>
         </div>
       </div>
     </div>
   </body>
-  <script src="map.js"></script>
 </html>

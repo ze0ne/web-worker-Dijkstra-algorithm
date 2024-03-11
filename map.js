@@ -170,20 +170,6 @@ fetch("routes.json")
     focusStop(start);
     focusStop(end);
 
-    dijkstra(graphik, start, ({ distances, parents }) => {
-      const chemin = cheminLePlusCourt(parents, end);
-      console.log(
-        "Le chemin le plus court de",
-        start,
-        "à",
-        end,
-        ":",
-        chemin,
-        "distance de ",
-        distances
-      );
-    });
-
     //console.log("eephrah", graphe, depart, destination);
     function dijkstrazz(noeuds, depart, arrivee) {
       focusStop(depart, "start");
@@ -460,4 +446,20 @@ function invalidPath() {
   g.selectAll(`circle`)
     .attr("r", 6)
     .attr("class", (d, i) => `${className} stop_${formaterChaine(d.name)} off`);
+}
+
+function search(departure, arrival) {
+  dijkstra(graphik, departure, ({ distances, parents }) => {
+    const chemin = cheminLePlusCourt(parents, arrival);
+    console.log(
+      "Le chemin le plus court de",
+      departure,
+      "à",
+      arrival,
+      ":",
+      chemin,
+      "distance de ",
+      distances
+    );
+  });
 }
