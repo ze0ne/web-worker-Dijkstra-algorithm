@@ -165,7 +165,7 @@ fetch("routes.json")
     const graphik = créerGraphe(tableauTransport);
     console.log("phik", graphik);
 
-    const start = "Polyclinique";
+    const start = "Commerce";
     const end = "Hangar à Bananes";
     focusStop(start);
     focusStop(end);
@@ -415,16 +415,23 @@ function dijkstra(graphe, départ) {
             distances[voisin] = distance;
             parents[voisin] = courant;
             queue.push(voisin);
+          } else {
+            invalidPath(courant, voisin);
+            //console.log("Chemin invalidé :", courant, "->", voisin);
           }
         }
       }
-      setTimeout(traverseQueue, 50); // Appel récursif après 1 seconde
+      setTimeout(traverseQueue, 0); // Appel récursif après 1 seconde
     }
   };
 
-  setTimeout(traverseQueue, 50); // Démarre la boucle après 1 seconde
+  setTimeout(traverseQueue, 0); // Démarre la boucle après 1 seconde
 
   return { distances, parents };
+}
+
+function invalidPath(courant, voisin) {
+  focusStop(voisin, "off");
 }
 
 // Fonction pour récupérer le chemin le plus court entre deux arrêts
