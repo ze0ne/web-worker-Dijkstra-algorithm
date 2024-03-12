@@ -1,4 +1,4 @@
-import { Component, Element, Host, State, h } from '@stencil/core';
+import { Component, Element, Host, Prop, State, h } from '@stencil/core';
 import * as d3 from 'd3';
 import * as L from 'leaflet';
 @Component({
@@ -7,6 +7,14 @@ import * as L from 'leaflet';
   shadow: false,
 })
 export class AppMap {
+  @Prop() isColorize: boolean;
+  @Prop() isTooltipEnable = false;
+  @Prop() fromTo = false;
+  @Prop() onlyTram = false;
+  @Prop() isMap = false;
+  @Prop({ mutable: true }) isDark = false;
+
+  mapUrl = '';
   map: L.Map;
 
   tooltip: any;
@@ -20,7 +28,7 @@ export class AppMap {
 
   graphe = {};
   async fetchData() {
-    const response = await fetch('assets/routes.json');
+    const response = await fetch('/assets/routes.json');
     if (response.ok) {
       this.routes = await response.json();
     } else {
@@ -44,11 +52,19 @@ export class AppMap {
 
   @Element() el: HTMLElement;
 
-  async componentDidLoad() {
+  async loadMap() {
+    if (this.isMap) {
+      this.mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+      if (this.isDark) {
+        this.mapUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      }
+    }
+
     this.map = L.map(document.getElementById('map')).setView([47.2184, -1.5536], 13);
 
     // Ajouter une couche de tuiles OpenStreetMap à la carte
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer(this.mapUrl, {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors',
     }).addTo(this.map);
@@ -60,16 +76,9 @@ export class AppMap {
     this.g = this.svg.append('g');
     this.tooltip = d3.select('body').append('div').attr('class', 'tooltip');
 
-    // Appel de fetchData pour récupérer les données avant de continuer
     await this.fetchData();
 
-    // Assurez-vous que responseData est défini avant d'essayer de l'utiliser
     if (this.routes) {
-      console.log('routes', this.routes);
-      // Créer une carte Leaflet dans l'élément avec l'ID 'map'
-
-      // Créer un calque SVG pour D3 dans la carte Leaflet
-
       const tableauTransport = [];
 
       this.routes.forEach(route => {
@@ -78,7 +87,6 @@ export class AppMap {
           stops.push(stop.stop_name);
         });
         const toto = { ligne: route.route.route_id, arrets: stops };
-        //console.log("toto", toto);
         tableauTransport.push(toto);
         const lineData = route.edges.map(edge => {
           return {
@@ -116,7 +124,6 @@ export class AppMap {
         objet.arrets.forEach(arret => {
           // Vérifier si l'arrêt n'existe pas déjà dans le tableau des arrêts uniques
           if (!arretsUniques.includes(arret)) {
-            // Si l'arrêt n'existe pas, l'ajouter au tableau des arrêts uniques
             arretsUniques.push(arret);
           }
         });
@@ -127,21 +134,22 @@ export class AppMap {
 
       // Remplissage du graphe
       tableauTransport.forEach(ligne => {
-        //console.log("ligne", ligne);
         for (let i = 0; i < ligne.arrets.length - 1; i++) {
           const depart = ligne.arrets[i];
           const arrivee = ligne.arrets[i + 1];
           const tempsTrajet = this.calculerTempsTrajet(); // fonction à définir
-          //console.log("tempsTrajet", depart, arrivee, tempsTrajet);
           this.ajouterArete(depart, arrivee, tempsTrajet); // fonction à définir
         }
       });
 
       this.graphe = this.creerGraphe(tableauTransport);
-      //this.search('Jean Rostand', 'Bois Jaulin');
 
       console.log('graph', this.graphe);
     }
+  }
+
+  async componentDidLoad() {
+    this.loadMap();
   }
 
   zoomend() {
@@ -184,13 +192,17 @@ export class AppMap {
 
   createLine(line) {
     const className = `route_${line.route.route_short_name}`;
+    const lines = ['1-0', '2-0', '3-0', '4-0', '5-0'];
+    if (this.onlyTram && !lines.includes(line.route.route_id)) {
+      line.route.route_color = '00000011';
+    }
     this.g
       .selectAll(`line.${className}`)
       .data(line.edges)
       .enter()
       .append('line')
       .attr('class', className)
-      .style('stroke', `#${line.route.route_color}`) // Couleur des lignes
+      .style('stroke', `#${this.isColorize ? line.route.route_color : '000'}`) // Couleur des lignes
       .attr('class', className)
       .style('stroke-width', 3); // Épaisseur des lignes
 
@@ -204,26 +216,24 @@ export class AppMap {
       .data(line.stops)
       .enter()
       .append('circle')
-      .style('fill', `#${line.route.route_color}`)
+      .style('fill', `#${this.isColorize ? line.route.route_color : 'FFF'}`)
       .style('z-index', '0')
       .attr('class', d => `${className} stop_${this.formaterChaine(d.name)}`)
       .on('mouseover', (event, d) => {
-        // Transition pour faire apparaître le tooltip
-        this.tooltip.transition().duration(200).style('opacity', 1);
+        if (this.isTooltipEnable) {
+          // Transition pour faire apparaître le tooltip
+          this.tooltip.transition().duration(200).style('opacity', 1);
 
-        // Définir le contenu HTML du tooltip et le style de la bordure
-        this.tooltip.html(d.name).style('border-color', `#${line.route.route_color}`);
+          // Définir le contenu HTML du tooltip et le style de la bordure
+          this.tooltip.html(d.name).style('border-color', `#${line.route.route_color}`);
 
-        // Calculer la position x du tooltip par rapport à la souris
-        const xPosition = event.pageX - this.tooltip.node().offsetWidth / 2;
+          // Calculer la position x du tooltip par rapport à la souris
+          const xPosition = event.pageX - this.tooltip.node().offsetWidth / 2;
 
-        // Définir la position du tooltip
-        this.tooltip.style('left', xPosition + 'px').style('top', event.pageY - 40 + 'px');
+          // Définir la position du tooltip
+          this.tooltip.style('left', xPosition + 'px').style('top', event.pageY - 40 + 'px');
+        }
       })
-      // .on("mouseout", function (d) {
-      //   tooltip.transition().duration(500).style("opacity", 0);
-      // })
-      //.attr("class", className)
       .attr('r', 4)
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
@@ -369,6 +379,12 @@ export class AppMap {
     });
   }
 
+  darkMode(event) {
+    console.log('DARK');
+    this.isDark = true;
+    this.loadMap();
+  }
+
   render() {
     const departureInput = document.querySelector<HTMLSelectElement>('#departure');
     const arrivalInput = document.querySelector<HTMLSelectElement>('#arrival');
@@ -377,45 +393,48 @@ export class AppMap {
 
     return (
       <Host>
-        <div class="max-w-md bg-white rounded-md shadow-md overflow-hidden">
-          <div class="bg-gray-200 text-gray-700 px-4 py-2">
-            <h2 class="text-lg font-semibold">Planification de Voyage</h2>
+        {this.fromTo && (
+          <div class="w-80 bg-white rounded-md shadow-md overflow-hidden">
+            <div class="w-full bg-gray-200 text-gray-700 px-4 py-2">
+              <h2 class="text-lg font-semibold">Planification de Voyage</h2>
+            </div>
+            <div class="p-4 w-full">
+              <div class="mb-4">
+                <label htmlFor="departure" class="block text-gray-700 font-bold mb-2">
+                  Départ :
+                </label>
+                <select id="departure" name="departure" class={'w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400'}>
+                  {this.stops.map(option => (
+                    <option value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              <div class="mb-4">
+                <label htmlFor="arrival" class="block text-gray-700 font-bold mb-2">
+                  Arrivée :
+                </label>
+                <select id="arrival" name="arrival" class={'w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400'}>
+                  {this.stops.map(option => (
+                    <option value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <button
+                  onClick={event => this.search(departureInput.value, arrivalInput.value, event)}
+                  class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                >
+                  Rechercher Itinéraire
+                </button>
+              </div>
+              <div class={'mt-6'}>
+                <button onClick={event => this.darkMode(event)} class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                  Dark mode
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="p-4">
-            <div class="mb-4">
-              <label htmlFor="departure" class="block text-gray-700 font-bold mb-2">
-                Départ :
-              </label>
-              {/*<input
-                type="text"
-                id="departure"
-                name="departure"
-                placeholder="Entrez votre lieu de départ"
-                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400"
-              /> */}
-              <select id="departure" name="departure" class={'w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400'}>
-                {this.stops.map(option => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div class="mb-4">
-              <label htmlFor="arrival" class="block text-gray-700 font-bold mb-2">
-                Arrivée :
-              </label>
-              <select id="arrival" name="arrival" class={'w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-400'}>
-                {this.stops.map(option => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <button onClick={event => this.search(departureInput.value, arrivalInput.value, event)} class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
-                Rechercher Itinéraire
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
 
         <div id="map" class={'h-full w-full'}></div>
         <slot></slot>

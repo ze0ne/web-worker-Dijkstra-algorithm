@@ -4,6 +4,12 @@
 .leaflet-pane {
   pointer-events: none;
 }
+#map {
+  margin-left: 100px;
+  height: 800px;
+  width: 1200px;
+  margin-top: -150px;
+}
 svg {
   pointer-events: all;
 }

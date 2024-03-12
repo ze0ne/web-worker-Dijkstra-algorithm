@@ -7,6 +7,12 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface AppMap {
+        "fromTo": boolean;
+        "isColorize": boolean;
+        "isDark": boolean;
+        "isMap": boolean;
+        "isTooltipEnable": boolean;
+        "onlyTram": boolean;
     }
     interface MyComponent {
         /**
@@ -43,6 +49,12 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppMap {
+        "fromTo"?: boolean;
+        "isColorize"?: boolean;
+        "isDark"?: boolean;
+        "isMap"?: boolean;
+        "isTooltipEnable"?: boolean;
+        "onlyTram"?: boolean;
     }
     interface MyComponent {
         /**
