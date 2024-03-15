@@ -27,6 +27,23 @@
       <!-- Content -->
       <div class="flex w-full h-screen p-4" style="z-index: 100; margin-top: 140px">
         <div class="flex w-full">
+          <span id="info">0</span>
+          <button onclick="start()">GO</button>
+
+          <script>
+            const start = () => {
+              console.log('started');
+              console.time('duree');
+
+              // simulation d'un long traitement
+              for (let i = 0; i <= 500000; i++) {
+                // affichage du compteur
+                document.getElementById('info').textContent = i;
+              }
+
+              console.timeEnd('duree');
+            };
+          </script>
           <div class="p-4 w-fit h-screen rounded-lg">
             <app-map class="flex w-screen" from-to="true" is-colorize="true" is-tooltip-enable="true" is-map="true"></app-map>
           </div>
