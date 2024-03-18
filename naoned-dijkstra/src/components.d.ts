@@ -6,6 +6,10 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface AppBouncingBall {
+    }
+    interface AppCounter {
+    }
     interface AppMap {
         "fromTo": boolean;
         "isColorize": boolean;
@@ -30,6 +34,18 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLAppBouncingBallElement extends Components.AppBouncingBall, HTMLStencilElement {
+    }
+    var HTMLAppBouncingBallElement: {
+        prototype: HTMLAppBouncingBallElement;
+        new (): HTMLAppBouncingBallElement;
+    };
+    interface HTMLAppCounterElement extends Components.AppCounter, HTMLStencilElement {
+    }
+    var HTMLAppCounterElement: {
+        prototype: HTMLAppCounterElement;
+        new (): HTMLAppCounterElement;
+    };
     interface HTMLAppMapElement extends Components.AppMap, HTMLStencilElement {
     }
     var HTMLAppMapElement: {
@@ -43,11 +59,17 @@ declare global {
         new (): HTMLMyComponentElement;
     };
     interface HTMLElementTagNameMap {
+        "app-bouncing-ball": HTMLAppBouncingBallElement;
+        "app-counter": HTMLAppCounterElement;
         "app-map": HTMLAppMapElement;
         "my-component": HTMLMyComponentElement;
     }
 }
 declare namespace LocalJSX {
+    interface AppBouncingBall {
+    }
+    interface AppCounter {
+    }
     interface AppMap {
         "fromTo"?: boolean;
         "isColorize"?: boolean;
@@ -71,6 +93,8 @@ declare namespace LocalJSX {
         "middle"?: string;
     }
     interface IntrinsicElements {
+        "app-bouncing-ball": AppBouncingBall;
+        "app-counter": AppCounter;
         "app-map": AppMap;
         "my-component": MyComponent;
     }
@@ -79,6 +103,8 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "app-bouncing-ball": LocalJSX.AppBouncingBall & JSXBase.HTMLAttributes<HTMLAppBouncingBallElement>;
+            "app-counter": LocalJSX.AppCounter & JSXBase.HTMLAttributes<HTMLAppCounterElement>;
             "app-map": LocalJSX.AppMap & JSXBase.HTMLAttributes<HTMLAppMapElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
         }
