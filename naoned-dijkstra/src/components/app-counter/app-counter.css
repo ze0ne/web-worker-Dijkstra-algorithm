@@ -1,9 +1,17 @@
 :host {
   display: block;
-  font-family: "Slackside One", cursive;
+}
+
+button {
+  text-align: center;
+  padding: 10px;
+  background: rgb(42, 81, 255);
+  color: #fff;
+  border-radius: 10px;
 }
 
 .counter {
+  font-family: "Slackside One", cursive;
   background: url('../../assets/img/matrix-bg.png');
   background-size: cover;
   width: 300px;

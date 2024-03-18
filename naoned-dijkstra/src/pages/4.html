@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>TAN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Slackside+One&display=swap" rel="stylesheet" />
+    <link href="/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script type="module" src="/build/naoned-dijkstra.esm.js"></script>
+    <script nomodule src="/build/naoned-dijkstra.js"></script>
+  </head>
+
+  <body class="bg-gray-100 h-full font-sans leading-normal tracking-normal">
+    <div class="flex">
+      <!-- Sidebar -->
+      <div class="flex h-100 bg-gray-800 text-gray-100">
+        <nav class="fixed top-0 left-0 h-full border-r bg-white space-y-8 w-96">
+          <div class="flex flex-col h-full">
+            <div class="h-20 flex items-center mx-auto my-10">
+              <a href="javascript:void(0)" class="flex-none" rel="nofollow">
+                <img src="/assets/img/logo.png" width="200" class="mx-auto" />
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Content -->
+      <div class="flex w-full h-screen p-4" style="z-index: 100; margin-top: 140px">
+        <div class="flex w-full">
+          <div class="p-4 w-fit h-screen rounded-lg">
+            <app-map class="flex w-screen" from-to="true" is-colorize="true" is-tooltip-enable="true" is-map="true"></app-map>
+          </div>
+          <div class="w-full h-full rounded-lg border-2 border-dashed flex p-2"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

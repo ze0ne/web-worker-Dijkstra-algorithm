@@ -1,5 +1,5 @@
 import { Component, Host, State, h } from '@stencil/core';
-import { countDown } from '../../stuff.worker';
+import { countUp, countUpInterval } from '../../stuff.worker';
 
 @Component({
   tag: 'app-counter',
@@ -7,25 +7,33 @@ import { countDown } from '../../stuff.worker';
   shadow: true,
 })
 export class AppCounter {
-  @State() toto: number = 0;
+  @State() count: number = 0;
+
+  bigNum = 9999999;
 
   start = () => {
-    this.toto = 0;
-    for (let i = 0; i <= 99999; i++) {
-      console.log('i', i);
-      // affichage du compteur
-      this.toto = i;
+    this.count = 0;
+    for (let i = 0; i <= this.bigNum; i++) {
+      //console.log('i', i);
+      this.count = i;
     }
   };
 
   startWorker = () => {
-    this.toto = 0;
+    this.count = 0;
+    countUp(this.bigNum, p => {
+      //console.log('progress', p);
+      this.count = p;
+    }).then(result => {
+      console.log('finish', result);
+    });
+  };
 
-    // Modifiez ceci pour assurer le bon contexte du 'this'
-    console.log('start');
-    countDown(99999, p => {
-      console.log('progress', p);
-      this.toto = p;
+  startWorkerInterval = () => {
+    this.count = 0;
+    countUpInterval(this.bigNum, p => {
+      //console.log('progress interval', p);
+      this.count = p;
     }).then(result => {
       console.log('finish', result);
     });
@@ -34,11 +42,12 @@ export class AppCounter {
   render() {
     return (
       <Host>
-        <button onClick={this.startWorker}>GO WORKER</button>
+        <button onClick={this.start}>SANS WORKER</button>&nbsp;&nbsp;
+        <button onClick={this.startWorker}>AVEC WORKER</button>&nbsp;&nbsp;
+        <button onClick={this.startWorkerInterval}>AVEC WORKER Interval</button>
         <br />
         <br />
-        <button onClick={this.start}>GO</button>
-        <div class="counter">{this.toto}</div>
+        <div class="counter">{this.count}</div>
         <slot></slot>
       </Host>
     );

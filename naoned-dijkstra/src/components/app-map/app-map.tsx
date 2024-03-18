@@ -12,7 +12,7 @@ export class AppMap {
   @Prop() fromTo = false;
   @Prop() onlyTram = false;
   @Prop() isMap = false;
-  @Prop({ mutable: true }) isDark = false;
+  @Prop({ mutable: true }) isDark = true;
 
   mapUrl = '';
   map: L.Map;
@@ -113,7 +113,6 @@ export class AppMap {
         this.createStopPoint({ ...route, edges: lineData, stops: stopsData });
       });
       //this.map.on('moveend', this.updateAll());
-      console.log('tass', tableauTransport);
 
       // Tableau pour stocker tous les arrêts uniques
       let arretsUniques = [];
@@ -129,7 +128,6 @@ export class AppMap {
         });
       });
 
-      console.log('arret', arretsUniques.sort());
       this.stops = arretsUniques.sort();
 
       // Remplissage du graphe
@@ -143,8 +141,6 @@ export class AppMap {
       });
 
       this.graphe = this.creerGraphe(tableauTransport);
-
-      console.log('graph', this.graphe);
     }
   }
 
@@ -152,9 +148,7 @@ export class AppMap {
     this.loadMap();
   }
 
-  zoomend() {
-    console.log('zoom');
-  }
+  zoomend() {}
 
   creerGraphe(lignes) {
     const graphezz = {};
@@ -266,7 +260,6 @@ export class AppMap {
   }
 
   updateAll() {
-    console.log('updateAll');
     this.routes.forEach(route => {
       const lineData = route.edges.map(edge => {
         return {
@@ -375,12 +368,11 @@ export class AppMap {
   search(departure, arrival, event): void {
     this.dijkstra(departure, ({ distances, parents }) => {
       const chemin = this.cheminLePlusCourt(parents, arrival);
-      console.log('Le chemin le plus court de', departure, 'à', arrival, ':', chemin, 'distance de ', distances);
+      //console.log('Le chemin le plus court de', departure, 'à', arrival, ':', chemin, 'distance de ', distances);
     });
   }
 
   darkMode(event) {
-    console.log('DARK');
     this.isDark = true;
     this.loadMap();
   }
@@ -388,8 +380,6 @@ export class AppMap {
   render() {
     const departureInput = document.querySelector<HTMLSelectElement>('#departure');
     const arrivalInput = document.querySelector<HTMLSelectElement>('#arrival');
-
-    console.log('deee', departureInput);
 
     return (
       <Host>
@@ -425,11 +415,6 @@ export class AppMap {
                   class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                 >
                   Rechercher Itinéraire
-                </button>
-              </div>
-              <div class={'mt-6'}>
-                <button onClick={event => this.darkMode(event)} class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-blue-600">
-                  Dark mode
                 </button>
               </div>
             </div>
