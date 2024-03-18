@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>Mutli worker </title>
+    <script>
+      if (window.Worker) {
+        const workerA = new Worker("worker-a.js");
+        const workerB = new Worker("worker-b.js");
+
+        function onSubmit() {
+          const username = document.querySelector("#username").value;
+          const password = document.querySelector("#password").value;
+          [workerA, workerB].forEach((worker) => {
+            worker.postMessage({ username, password });
+          });
+        }
+
+        workerA.onmessage = function (e) {
+          console.log("Message reçu depuis le worker A", e);
+        };
+
+        workerB.onmessage = function (e) {
+          console.log("Message reçu depuis le worker B", e);
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" name="username" id="username" />
+    <input type="password" name="password" id="password" />
+    <button onclick="onSubmit()">Submit</button>
+</html>
