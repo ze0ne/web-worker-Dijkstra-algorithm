@@ -12,59 +12,13 @@
     <script type="module" src="/build/naoned-dijkstra.esm.js"></script>
     <script nomodule src="/build/naoned-dijkstra.js"></script>
   </head>
-  <style>
-    .boucing-ball {
-      border: solid red 2px;
-      width: 500px !important;
-      height: 500px !important;
-    }
-  </style>
 
   <body class="bg-gray-100 h-full font-sans leading-normal tracking-normal">
-    <input type="text" name="username" id="username" />
-    <input type="password" name="password" id="password" />
-    <button onclick="onSubmit()">Submit</button>
     <div class="flex">
-      <!-- Sidebar -->
-      <div class="flex h-100 bg-gray-800 text-gray-100">
-        <nav class="fixed top-0 left-0 h-full border-r bg-white space-y-8 w-96">
-          <div class="flex flex-col h-full">
-            <div class="h-20 flex items-center mx-auto my-10">
-              <a href="javascript:void(0)" class="flex-none" rel="nofollow">
-                <img src="assets/img/logo.png" width="200" class="mx-auto" />
-              </a>
-            </div>
-          </div>
-        </nav>
-      </div>
-
       <!-- Content -->
       <div class="flex w-full h-screen p-4" style="z-index: 100; margin-top: 140px">
         <div class="flex w-full">
-          <span id="info">0</span>
-          <button onclick="start()">GO</button>
-
-          <script>
-            const start = () => {
-              console.log('started');
-              console.time('duree');
-
-              // simulation d'un long traitement
-              for (let i = 0; i <= 500000; i++) {
-                // affichage du compteur
-                document.getElementById('info').textContent = i;
-              }
-
-              console.timeEnd('duree');
-            };
-          </script>
-          <app-counter></app-counter>
-
-          <div class="p-4 w-fit h-screen rounded-lg">
-            <app-bouncing-ball></app-bouncing-ball>
-            <app-map class="flex w-screen" from-to="true" is-colorize="true" is-tooltip-enable="true" is-map="true"></app-map>
-          </div>
-          <div class="w-full h-full rounded-lg border-2 border-dashed flex p-2"></div>
+          <h1>StencilJS</h1>
         </div>
       </div>
     </div>
