@@ -9,7 +9,7 @@ import { countUp, countUpInterval } from '../../stuff.worker';
 export class AppCounter {
   @State() count: number = 0;
 
-  bigNum = 9999999;
+  bigNum = 999999999;
 
   start = () => {
     this.count = 0;
